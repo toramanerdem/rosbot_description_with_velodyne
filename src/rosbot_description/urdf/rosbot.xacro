@@ -11,6 +11,11 @@
   <xacro:include filename="$(find rosbot_description)/urdf/materials.xacro" />
   <xacro:include filename="$(find rosbot_description)/urdf/rosbot.gazebo" />
 
+  <xacro:arg name="gpu" default="false"/>
+  <xacro:property name="gpu" value="$(arg gpu)" />
+  <xacro:arg name="organize_cloud" default="false"/>
+  <xacro:property name="organize_cloud" value="$(arg organize_cloud)" />
+
   <link name="base_link"></link> 
   <joint name="base_link_joint" type="fixed">
     <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -331,15 +336,15 @@
   <link name="camera_depth_frame">
   </link>
 
-  <joint name="rplidar_joint" type="fixed">
+  <!-- <joint name="rplidar_joint" type="fixed">
     <axis xyz="0 1 0" />
     <origin xyz="0.02 0 0.058" rpy="0 0 3.14"/>
     <parent link="body_link"/>
     <child link="laser"/>
-  </joint>
+  </joint> -->
 
   <!-- rplidar Laser -->
-  <link name="laser">
+  <!-- <link name="laser">
     <collision>
       <origin xyz="0 0 0" rpy="1.5707 0 4.71"/>
       <geometry>
@@ -353,15 +358,21 @@
         <mesh filename="package://rosbot_description/meshes/rplidar.stl" scale="0.001 0.001 0.001" />
       </geometry>
       <material name="Black"/>
-    </visual>
+    </visual> -->
 
-    <inertial>
+    <!-- <inertial>
       <mass value="1e-5" />
       <origin xyz="0 0 0" rpy="1.5707 0 4.71"/>
       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
     </inertial>
-  </link>
+  </link> -->
 
+  <xacro:include filename="$(find turtlebot3_velodyne_description)/urdf/VLP-16.urdf.xacro"/>
+  <xacro:VLP-16 parent="base_link" name="velodyne" topic="/velodyne_points" organize_cloud="${organize_cloud}" hz="10" samples="440" gpu="${gpu}">
+    <origin xyz="-0.032 0 0.14" rpy="0 0 0" />
+  </xacro:VLP-16>
+  
+  
   <joint name="range_fl_joint" type="fixed">
     <axis xyz="0 1 0" />
     <origin xyz="0.1 0.05 0.01" rpy="0 0 0.13 "/>
